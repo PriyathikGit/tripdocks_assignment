@@ -1,54 +1,90 @@
-# React + TypeScript + Vite
+Text Editor using Tiptap with Suggestion Feature
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Summary - A powerful rich text editor built with Tiptap and React that supports variables, dark mode, and HTML export capabilities.
 
-## Expanding the ESLint configuration
+# Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Rich Text Editing: Full-featured WYSIWYG editor with formatting options
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Variable Integration: Insert dynamic variables with {{ syntax
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Dark/Light Mode: Automatic theme switching based on system preferences
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Export Options: Export as raw HTML (with variables) or rendered HTML (with values)
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+Responsive Design: Works on desktop and mobile devices
+
+Code Support: Syntax highlighting for code blocks
+
+
+# Installation
+Clone the repository:
+cd text-editor
+
+# Install dependencies:
+
+1. npm install
+# or
+2. yarn install
+
+# Start the development server:
+
+1. npm start
+# or
+2. yarn start
+
+
+# Usage
+
+1. Basic Editing
+Use the toolbar buttons to format text (bold, italic, headings, etc.)
+
+2. Press Enter to create new paragraphs
+
+3. Use Tab to indent lists
+
+4. Variable Integration
+Type {{ to open the variables menu
+
+5. Use arrow keys to navigate variables
+
+6. Press Enter to insert selected variable
+
+7. Variables appear as ❴•❵variable_name in the editor
+
+8. Export Options
+* Raw Export: Preserves variables in {{variable}} format
+* Rendered Export: Replaces variables with their actual values
+
+# Dark Mode
+The editor automatically switches between light and dark modes based on system preferences.
+
+
+Dependencies
+Tiptap - Editor framework
+
+React - UI library
+
+Tailwind CSS - Utility classes (if used)
+
+
+# Working Flow
+
+1. Switch Dark Mode
+![alt text](image-1.png)
+![alt text](image.png)
+
+2. Suggestion Pop-up with smooth animation
+![alt text](image-2.png)
+
+3. A simple example which highlight all key functionality like Variable Insertion tile effect, Some text format like h1,h2, orderded list, colour change, block quote and code block section
+
+![alt text](image-3.png)
+
+
+4. Export content in raw(orginal as editor) and rendered (normal html text except code)
+
+1. rendered : ![alt text](image-6.png)
+2. raw : ![alt text](image-5.png)
