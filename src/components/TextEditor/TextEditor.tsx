@@ -4,10 +4,12 @@ import { Mention } from '@tiptap/extension-mention'
 import { Color } from "@tiptap/extension-color"
 import { SuggestionProps } from '@tiptap/suggestion'
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
-import { VARIABLES } from '../variables'
+import { VARIABLES } from './variables'
 import "./index.css"
 import TextStyle from '@tiptap/extension-text-style'
 import Placeholder from '@tiptap/extension-placeholder'
+import ExportButton from './Export_method'
+import CodeBlock from '@tiptap/extension-code-block'
 
 interface VariableItemProps {
     variable: typeof VARIABLES[0]
@@ -31,6 +33,8 @@ const VariableEditor = () => {
 
     const [suggestionQuery, setSuggestionQuery] = useState<string | null>(null);
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
+    const editorRef = useRef<HTMLDivElement>(null);
 
     const filteredVariables = useMemo(() =>
         VARIABLES.filter(variable =>
@@ -76,9 +80,11 @@ const VariableEditor = () => {
                     onStart: (props: SuggestionProps) => {
                         setSuggestionQuery(props.query);
                         setSelectedIndex(0);
+                        updatePopoverPosition();
                     },
                     onUpdate: (props: SuggestionProps) => {
                         setSuggestionQuery(props.query);
+                        updatePopoverPosition();
                     },
                     onKeyDown: ({ event }) => {
                         if (event.key === 'Escape') {
@@ -130,6 +136,10 @@ const VariableEditor = () => {
                 emptyNodeClass: 'is-empty',
                 showOnlyWhenEditable: true,
             }),
+            CodeBlock.configure({
+                // Optional configuration
+                languageClassPrefix: 'language-',
+            }),
         ],
 
         editorProps: {
@@ -138,6 +148,22 @@ const VariableEditor = () => {
             },
         },
     })
+
+
+    const updatePopoverPosition = useCallback(() => {
+        if (!editorRef.current || !editor) return;
+
+        // Get the current selection position from Prosemirror
+        const { from } = editor.state.selection;
+        const coords = editor.view.coordsAtPos(from);
+        // Get editor's scroll position and offset
+        const editorRect = editorRef.current.getBoundingClientRect();
+
+        setPopoverPosition({
+            top: coords.top - editorRect.top - 20,
+            left: coords.left - editorRect.left + 20
+        });
+    }, [editor]);
 
     const insertVariable = useCallback(
         (variable: typeof VARIABLES[0]) => {
@@ -189,7 +215,7 @@ const VariableEditor = () => {
         return null
     }
     return (
-        <div className="editor-container shadow-xl">
+        <div className="editor-container shadow-xl" ref={editorRef}>
             <div className="menu-bar">
                 <button
                     onClick={() => editor.chain().focus().toggleBold().run()}
@@ -233,11 +259,12 @@ const VariableEditor = () => {
                 >
                     Strike
                 </button>
+
                 <button
-                    onClick={() => editor.chain().focus().toggleCode().run()}
-                    className={editor.isActive('code') ? 'is-active' : ''}
+                    onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                    className={editor.isActive('codeBlock') ? 'is-active' : ''}
                 >
-                    Code
+                    Code Block
                 </button>
                 <button
                     onClick={() => editor.chain().focus().toggleBlockquote().run()}
@@ -261,22 +288,24 @@ const VariableEditor = () => {
                 >
                     Purple
                 </button>
+                <ExportButton editor={editor} type='raw' />
+                <ExportButton editor={editor} type='rendered' />
             </div>
 
-            <div className="editor-wrapper">
+            <div className="editor-wrapper ">
                 <EditorContent editor={editor} />
 
                 {editor && (
-                    <BubbleMenu editor={editor} className='flex gap-2'>
+                    <BubbleMenu editor={editor} className='flex gap-2 absolute top-10'>
                         <button
                             onClick={() => editor.chain().focus().toggleBold().run()}
-                            className={`border px-2 py-1 bg-gray-100 rounded ${editor.isActive('bold') ? 'is-active' : ''}`}
+                            className={`dark:bg-slate-600 border px-2 py-1 bg-gray-100 rounded ${editor.isActive('bold') ? 'is-active' : ''}`}
                         >
                             Bold
                         </button>
                         <button
                             onClick={() => editor.chain().focus().toggleItalic().run()}
-                            className={`border px-2 py-1 bg-gray-100 rounded ${editor.isActive('italic') ? 'is-active' : ''}`}
+                            className={`dark:bg-slate-600 border px-2 py-1 bg-gray-100 rounded ${editor.isActive('italic') ? 'is-active' : ''}`}
                         >
                             Italic
                         </button>
@@ -284,7 +313,14 @@ const VariableEditor = () => {
                 )}
 
                 {suggestionQuery !== null && (
-                    <div className="variables-popover">
+                    <div className="variables-popover"
+                        style={{
+                            position: 'absolute',
+                            top: `${popoverPosition.top}px`,
+                            left: `${popoverPosition.left}px`,
+                            zIndex: 9999,
+                        }}
+                    >
                         <ul className="variables-list">
                             {filteredVariables.length > 0 ? (
                                 filteredVariables.map((variable, index) => (
@@ -302,7 +338,7 @@ const VariableEditor = () => {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     )
 }
 

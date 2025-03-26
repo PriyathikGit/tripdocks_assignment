@@ -4,20 +4,22 @@
 .editor-container {
   display: flex;
   flex-direction: column;
-  min-width: 800px;
+  max-height: 80vh;
   margin: 0 auto;
   border: 1px solid #e2e8f0;
   border-radius: 0.5rem;
-  overflow: auto;
-  background-color: white;
+  width: 100%;
+  max-width: 60%; /* Prevent horizontal expansion */
+  overflow-x: hidden; /* Hide any horizontal overflow */
 }
 
 .menu-bar {
   padding: 0.5rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.7rem;
   border-bottom: 1px solid #e2e8f0;
   background-color: #f8fafc;
 }
@@ -44,14 +46,19 @@
 
 .editor-wrapper {
   position: relative;
+  flex-grow: 1; /* Allow the editor to grow and fill available space */
+  overflow-y: auto; /* Enable vertical scrolling */
   min-height: 300px;
+  max-height: 100%; /* Ensure it doesn't exceed the container's height */
+  padding: 1rem;
   z-index: 10;
 }
 
 .ProseMirror {
   padding: 1rem;
-  min-height: 300px;
+  min-height: 100%;
   outline: none;
+  position: relative;
 }
 
 .ProseMirror:focus {
@@ -126,25 +133,35 @@
   opacity: 1;
 }
 
-/* Variables Popover */
 .variables-popover {
   position: absolute;
-  z-index: 1000;
-  width: auto;
-  top: 0;
-  right: 0;
+  background: white;
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid #ccd1d7;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 9999;
+  animation: fadeIn 0.75s ease-out;
+  width: 250px; /* Fixed width for consistency */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .variables-list {
   list-style: none;
-  padding: 0;
+  padding: 0.5rem 0;
   margin: 0;
-  max-height: 300px;
-  overflow-y: auto;
 }
 
 .variable-item {
@@ -186,15 +203,22 @@
   text-align: center;
 }
 
-/* Code and preformatted text styles */
+/* For inline code */
 code {
-  background-color: var(--purple-light);
-  border-radius: 0.4rem;
-  color: var(--black);
-  font-size: 0.85rem;
-  padding: 0.25em 0.3em;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  color: white;
+  font-size: medium;
 }
 
+/* For code blocks */
+pre {
+  background-color: #2a303d;
+  padding: 1em;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: monospace;
+}
 blockquote {
   border-left: 3px solid gray;
   margin: 1.5rem 0;
@@ -221,4 +245,72 @@ blockquote {
 .braces-icon {
   font-size: 0.9em;
   padding: 0 2px;
+}
+
+/* Light mode styles */
+.editor-container {
+  background-color: white;
+  color: black;
+}
+
+/* Dark mode styles */
+.dark .editor-container {
+  background-color: #1e1e1e; /* Dark background */
+  color: #f5f5f5; /* Light text */
+}
+
+/* ProseMirror styles for dark mode */
+.dark .ProseMirror {
+  background-color: #1e1e1e; /* Dark background */
+  color: #f5f5f5; /* Light text */
+}
+
+.dark .ProseMirror p {
+  color: #f5f5f5;
+}
+
+.dark .menu-bar button {
+  background-color: #333; /* Dark button background */
+  color: #f5f5f5; /* Light button text */
+}
+
+.dark .menu-bar button:hover {
+  background-color: #444; /* Slightly lighter background on hover */
+}
+
+.dark .menu-bar button.is-active {
+  background-color: #3b82f6; /* Active button background */
+  color: white; /* Active button text */
+}
+.dark .menu-bar {
+  background: transparent;
+}
+
+.dark code {
+  color: #e2e8f0; 
+}
+
+.dark pre {
+  background-color: #1a202c;
+}
+
+.dark .variables-popover {
+  background-color: #2d3748;
+  border-color: #4a5568;
+  color: #f7fafc;
+}
+
+.dark .variable-item:hover {
+  background-color: #4a5568;
+}
+
+.dark .no-results {
+  color: #a0aec0;
+}
+
+@media (max-width: 786px) {
+  .editor-container {
+    min-width: 0;
+    max-width: 100%;
+  }
 }
